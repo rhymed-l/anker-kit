@@ -41,8 +41,8 @@ source .venv/bin/activate  # or on Windows PowerShell: .venv\Scripts\Activate.ps
 # Install project in editable mode
 uv pip install -e .
 
-# Now 'specify' entrypoint is available
-specify --help
+# Now 'anker-spa' entrypoint is available
+anker-spa --help
 ```
 
 Re-running after code edits requires no reinstall because of editable mode.
@@ -68,7 +68,7 @@ uvx --from git+https://github.com/github/spec-kit.git@your-feature-branch anker-
 If you're in another directory, use an absolute path instead of `.`:
 
 ```bash
-uvx --from /mnt/c/GitHub/spec-kit specify --help
+uvx --from /mnt/c/GitHub/spec-kit anker-spa --help
 uvx --from /mnt/c/GitHub/spec-kit anker-spa init demo-anywhere --ai copilot --ignore-agent-tools --script sh
 ```
 
@@ -133,7 +133,7 @@ Or copy only the modified CLI portion if you want a lighter sandbox.
 If you need to bypass TLS validation while experimenting:
 
 ```bash
-specify check --skip-tls
+anker-spa check --skip-tls
 anker-spa init demo --skip-tls --ai gemini --ignore-agent-tools --script ps
 ```
 
@@ -141,8 +141,7 @@ anker-spa init demo --skip-tls --ai gemini --ignore-agent-tools --script ps
 
 ## 10. Rapid Edit Loop Summary
 
-| Action | Command |
-|--------|---------|
+| Action           | Command                            |
+|------------------|------------------------------------|
 | Run CLI directly | `python -m src.specify_cli --help` |
-| Editable install | `uv pip install -e .` then `anker-spa ...` |
-| Local uvx run (repo root) | `
+| CLI entrypoint   | `anker-spa ...`                    |

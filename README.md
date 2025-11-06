@@ -51,17 +51,17 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install anker-spa-cli --from git+https://github.com/github/spec-kit.git
+uv tool install anker-spa-cli --from git+https://github.com/rhymed-l/anker-kit.git
 ```
 
-Then use the tool directly:
+Then use the tool directly：
 
 ```bash
 anker-spa init <PROJECT_NAME>
 anker-spa check
 ```
 
-To upgrade anker-spa run:
+To upgrade run:
 
 ```bash
 uv tool install anker-spa-cli --force --from git+https://github.com/github/spec-kit.git
@@ -146,17 +146,17 @@ Want to see Spec Kit in action? Watch our [video overview](https://www.youtube.c
 
 ## 🔧 AnkerSPA CLI Reference
 
-The `specify` command supports the following options:
+The `anker-spa` command supports the following options:
 
 ### Commands
 
-| Command     | Description                                                    |
-|-------------|----------------------------------------------------------------|
-| `init`      | Initialize a new AnkerSPA project from the latest template      |
-| `check`     | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
-| `spa stages`| Inspect PAT workflow stages (stage id,依赖、人审配置)          |
-| `spa run`   | Execute the AnkerSPA workflow (串行 AA1→AA4，可指定 stage)     |
-| `spa promote` | Promote artifacts into `Practice/` when得分达标              |
+| Command   | Description                                                                                                                            |
+|-----------|----------------------------------------------------------------------------------------------------------------------------------------|
+| `init`    | Initialize a new AnkerSPA project from the latest template                                                                             |
+| `check`   | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
+| `stages`  | Inspect PAT workflow stages (stage id,依赖、人审配置)                                                                                         |
+| `run`     | Execute the AnkerSPA workflow (串行 AA1→AA4，可指定 stage)                                                                                   |
+| `promote` | Promote artifacts into `Practice/` when得分达标                                                                                            |
 
 ### `anker-spa init` Arguments & Options
 
@@ -193,28 +193,6 @@ anker-spa init my-project --ai amp
 
 # Initialize with PowerShell scripts (Windows/cross-platform)
 anker-spa init my-project --ai copilot --script ps
-
-# Initialize in current directory
-anker-spa init . --ai copilot
-# or use the --here flag
-anker-spa init --here --ai copilot
-
-# Force merge into current (non-empty) directory without confirmation
-anker-spa init . --force --ai copilot
-# or 
-anker-spa init --here --force --ai copilot
-
-# Skip git initialization
-anker-spa init my-project --ai gemini --no-git
-
-# Enable debug output for troubleshooting
-anker-spa init my-project --ai claude --debug
-
-# Use GitHub token for API requests (helpful for corporate environments)
-anker-spa init my-project --ai claude --github-token ghp_your_token_here
-
-# Check system requirements
-anker-spa check
 ```
 
 ### Available Slash Commands
