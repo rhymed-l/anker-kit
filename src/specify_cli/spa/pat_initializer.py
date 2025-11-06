@@ -49,8 +49,8 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         """
         version: "1.0.0"
         name: "AnkerSPA"
-        owner: "TODO-填入负责人"
-        description: "基于PAT标准的软件研发流程智能体"
+        owner: "TODO-\u586b\u5165\u8d1f\u8d23\u4eba"
+        description: "\u57fa\u4e8ePAT\u6807\u51c6\u7684\u8f6f\u4ef6\u7814\u53d1\u6d41\u7a0b\u667a\u80fd\u4f53"
         tags: ["PAT", "SPA", "Anker" ]
         template_version: "2025.11.06"
         """
@@ -61,15 +61,15 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         upstream_agents: []
         downstream_agents: []
         external_systems: []
-        orchestration_notes: "依据Plan/workflow.yaml 串行执行"
+        orchestration_notes: "\u4f9d\u636ePlan/workflow.yaml \u4e32\u884c\u6267\u884c"
         """
     ).strip()
     + "\n",
     "AnkerSPA/Input/requirement.md": dedent(
         """
-        # 原始需求
+        # \u539f\u59cb\u9700\u6c42
 
-        请在此粘贴产品或业务需求。保持最新版本，AA1 会基于此生成结构化需求。建议包含：业务目标、核心流程、关键角色、约束条件。
+        \u8bf7\u5728\u6b64\u7c98\u8d34\u4ea7\u54c1\u6216\u4e1a\u52a1\u9700\u6c42\u3002\u4fdd\u6301\u6700\u65b0\u7248\u672c\uff0cAA1 \u4f1a\u57fa\u4e8e\u6b64\u751f\u6210\u7ed3\u6784\u5316\u9700\u6c42\u3002\u5efa\u8bae\u5305\u542b\uff1a\u4e1a\u52a1\u76ee\u6807\u3001\u6838\u5fc3\u6d41\u7a0b\u3001\u5173\u952e\u89d2\u8272\u3001\u7ea6\u675f\u6761\u4ef6\u3002
         """
     ).strip()
     + "\n",
@@ -100,14 +100,14 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
           depends_on: []
           outputs: ["Output/requirement/requirement-spec.json", "Output/requirement/clarification-questions.md"]
           human_review_enabled: true
-          human_review_prompt: "请确认需求规范是否准确"
+          human_review_prompt: "\u8bf7\u786e\u8ba4\u9700\u6c42\u89c4\u8303\u662f\u5426\u51c6\u786e"
         stage_2:
           label: "Technical Design"
           agent: "AA2"
           depends_on: ["stage_1"]
           outputs: ["Output/design/technical-design.md", "Output/design/api-spec.yaml", "Output/design/data-model.json"]
           human_review_enabled: true
-          human_review_prompt: "请确认技术方案是否合理"
+          human_review_prompt: "\u8bf7\u786e\u8ba4\u6280\u672f\u65b9\u6848\u662f\u5426\u5408\u7406"
         stage_3:
           label: "Code Generation"
           agent: "AA3"
@@ -139,34 +139,34 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
     + "\n",
     "AnkerSPA/Checklist/requirement-checklist.yaml": dedent(
         """
-        checklist: ["业务目标明确", "角色及场景覆盖", "边界条件清晰", "非功能需求补充"]
+        checklist: ["\u4e1a\u52a1\u76ee\u6807\u660e\u786e", "\u89d2\u8272\u53ca\u573a\u666f\u8986\u76d6", "\u8fb9\u754c\u6761\u4ef6\u6e05\u6670", "\u975e\u529f\u80fd\u9700\u6c42\u8865\u5145"]
         score_weights: [30, 30, 20, 20]
         """
     ).strip()
     + "\n",
     "AnkerSPA/Checklist/design-checklist.yaml": dedent(
         """
-        checklist: ["架构层次合理", "接口契约完整", "数据模型规范", "风险与缓解建议"]
+        checklist: ["\u67b6\u6784\u5c42\u6b21\u5408\u7406", "\u63a5\u53e3\u5951\u7ea6\u5b8c\u6574", "\u6570\u636e\u6a21\u578b\u89c4\u8303", "\u98ce\u9669\u4e0e\u7f13\u89e3\u5efa\u8bae"]
         score_weights: [25, 30, 25, 20]
         """
     ).strip()
     + "\n",
     "AnkerSPA/Checklist/code-checklist.yaml": dedent(
         """
-        checklist: ["目录结构符合标准", "代码注释与类型标注", "异常处理充分", "测试覆盖率达标"]
+        checklist: ["\u76ee\u5f55\u7ed3\u6784\u7b26\u5408\u6807\u51c6", "\u4ee3\u7801\u6ce8\u91ca\u4e0e\u7c7b\u578b\u6807\u6ce8", "\u5f02\u5e38\u5904\u7406\u5145\u5206", "\u6d4b\u8bd5\u8986\u76d6\u7387\u8fbe\u6807"]
         score_weights: [20, 30, 25, 25]
         """
     ).strip()
     + "\n",
     "AnkerSPA/Reference/coding-standard.md": dedent(
         """
-        # 编码规范
+        # \u7f16\u7801\u89c4\u8303
 
-        - 统一使用 PEP8 风格（Python 示例）
-        - 严格的类型注解
-        - 函数注释遵循 Google 风格
-        - 重要路径增加结构化日志
-        - 错误处理需返回可追踪上下文
+        - \u7edf\u4e00\u4f7f\u7528 PEP8 \u98ce\u683c\uff08Python \u793a\u4f8b\uff09
+        - \u4e25\u683c\u7684\u7c7b\u578b\u6ce8\u89e3
+        - \u51fd\u6570\u6ce8\u91ca\u9075\u5faa Google \u98ce\u683c
+        - \u91cd\u8981\u8def\u5f84\u589e\u52a0\u7ed3\u6784\u5316\u65e5\u5fd7
+        - \u9519\u8bef\u5904\u7406\u9700\u8fd4\u56de\u53ef\u8ffd\u8e2a\u4e0a\u4e0b\u6587
         """
     ).strip()
     + "\n",
@@ -182,12 +182,12 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
     + "\n",
     "AnkerSPA/Reference/api-design-guide.md": dedent(
         """
-        # API 设计指南
+        # API \u8bbe\u8ba1\u6307\u5357
 
-        - 遵循 RESTful 语义，使用 kebab-case 路径
-        - 使用 OpenAPI 3.0 描述接口，字段提供 example
-        - 保持幂等操作语义，写操作返回资源状态
-        - 错误响应使用结构化 problem+json
+        - \u9075\u5faa RESTful \u8bed\u4e49\uff0c\u4f7f\u7528 kebab-case \u8def\u5f84
+        - \u4f7f\u7528 OpenAPI 3.0 \u63cf\u8ff0\u63a5\u53e3\uff0c\u5b57\u6bb5\u63d0\u4f9b example
+        - \u4fdd\u6301\u5e42\u7b49\u64cd\u4f5c\u8bed\u4e49\uff0c\u5199\u64cd\u4f5c\u8fd4\u56de\u8d44\u6e90\u72b6\u6001
+        - \u9519\u8bef\u54cd\u5e94\u4f7f\u7528\u7ed3\u6784\u5316 problem+json
         """
     ).strip()
     + "\n",
@@ -223,7 +223,7 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         version: "1.0.0"
         inputs: ["Input/requirement.md", "Input/context.json"]
         outputs: ["Output/requirement/requirement-spec.json", "Output/requirement/clarification-questions.md"]
-        description: "将原始需求转化为结构化需求，并列出澄清问题"
+        description: "\u5c06\u539f\u59cb\u9700\u6c42\u8f6c\u5316\u4e3a\u7ed3\u6784\u5316\u9700\u6c42\uff0c\u5e76\u5217\u51fa\u6f84\u6e05\u95ee\u9898"
         """
     ).strip()
     + "\n",
@@ -231,26 +231,26 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         """
         # Requirement Analyzer Prompt
 
-        角色：10 年资深需求分析师，聚焦业务上下文、边界条件、隐含需求。
+        \u89d2\u8272\uff1a10 \u5e74\u8d44\u6df1\u9700\u6c42\u5206\u6790\u5e08\uff0c\u805a\u7126\u4e1a\u52a1\u4e0a\u4e0b\u6587\u3001\u8fb9\u754c\u6761\u4ef6\u3001\u9690\u542b\u9700\u6c42\u3002
 
-        ## 输入
-        - 原始需求：Input/requirement.md
-        - 项目上下文：Input/context.json
+        ## \u8f93\u5165
+        - \u539f\u59cb\u9700\u6c42\uff1aInput/requirement.md
+        - \u9879\u76ee\u4e0a\u4e0b\u6587\uff1aInput/context.json
 
-        ## 输出任务
-        1. 生成结构化需求（Output/requirement/requirement-spec.json）
-        2. 输出澄清问题（Output/requirement/clarification-questions.md）
+        ## \u8f93\u51fa\u4efb\u52a1
+        1. \u751f\u6210\u7ed3\u6784\u5316\u9700\u6c42\uff08Output/requirement/requirement-spec.json\uff09
+        2. \u8f93\u51fa\u6f84\u6e05\u95ee\u9898\uff08Output/requirement/clarification-questions.md\uff09
 
-        ## 质量要求
-        - 功能、非功能、数据、接口四个维度完整
-        - 所有疑问需转化为澄清问题
-        - JSON 输出需通过校验
+        ## \u8d28\u91cf\u8981\u6c42
+        - \u529f\u80fd\u3001\u975e\u529f\u80fd\u3001\u6570\u636e\u3001\u63a5\u53e3\u56db\u4e2a\u7ef4\u5ea6\u5b8c\u6574
+        - \u6240\u6709\u7591\u95ee\u9700\u8f6c\u5316\u4e3a\u6f84\u6e05\u95ee\u9898
+        - JSON \u8f93\u51fa\u9700\u901a\u8fc7\u6821\u9a8c
         """
     ).strip()
     + "\n",
     "AnkerSPA/AA/AA1-RequirementAnalyzer/checklist.yaml": dedent(
         """
-        checklist: ["需求摘要覆盖场景", "功能拆解清晰", "非功能指标具备量化", "澄清问题指向具体风险"]
+        checklist: ["\u9700\u6c42\u6458\u8981\u8986\u76d6\u573a\u666f", "\u529f\u80fd\u62c6\u89e3\u6e05\u6670", "\u975e\u529f\u80fd\u6307\u6807\u5177\u5907\u91cf\u5316", "\u6f84\u6e05\u95ee\u9898\u6307\u5411\u5177\u4f53\u98ce\u9669"]
         """
     ).strip()
     + "\n",
@@ -262,7 +262,7 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         version: "1.0.0"
         inputs: ["Output/requirement/requirement-spec.json", "Reference/tech-stack.yaml", "Reference/coding-standard.md"]
         outputs: ["Output/design/technical-design.md", "Output/design/api-spec.yaml", "Output/design/data-model.json"]
-        description: "制定整体技术方案，参考历史案例"
+        description: "\u5236\u5b9a\u6574\u4f53\u6280\u672f\u65b9\u6848\uff0c\u53c2\u8003\u5386\u53f2\u6848\u4f8b"
         """
     ).strip()
     + "\n",
@@ -270,30 +270,30 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         """
         # Technical Designer Prompt
 
-        角色：15 年技术架构师，擅长微服务与 DDD。
+        \u89d2\u8272\uff1a15 \u5e74\u6280\u672f\u67b6\u6784\u5e08\uff0c\u64c5\u957f\u5fae\u670d\u52a1\u4e0e DDD\u3002
 
-        ## 输入
-        - 结构化需求：Output/requirement/requirement-spec.json
-        - 技术栈约束：Reference/tech-stack.yaml
-        - 编码规范：Reference/coding-standard.md
-        - 历史案例：Practice/*
+        ## \u8f93\u5165
+        - \u7ed3\u6784\u5316\u9700\u6c42\uff1aOutput/requirement/requirement-spec.json
+        - \u6280\u672f\u6808\u7ea6\u675f\uff1aReference/tech-stack.yaml
+        - \u7f16\u7801\u89c4\u8303\uff1aReference/coding-standard.md
+        - \u5386\u53f2\u6848\u4f8b\uff1aPractice/*
 
-        ## 输出任务
-        1. 技术方案文档（Output/design/technical-design.md）
-        2. OpenAPI 规格（Output/design/api-spec.yaml）
-        3. 数据模型（Output/design/data-model.json）
+        ## \u8f93\u51fa\u4efb\u52a1
+        1. \u6280\u672f\u65b9\u6848\u6587\u6863\uff08Output/design/technical-design.md\uff09
+        2. OpenAPI \u89c4\u683c\uff08Output/design/api-spec.yaml\uff09
+        3. \u6570\u636e\u6a21\u578b\uff08Output/design/data-model.json\uff09
 
-        ## 质量要求
-        - 模块划分清晰，符合 PAT
-        - API 契约完整，字段含义明确
-        - 数据模型支持查询、写入与约束
-        - 历史案例需引用可复用模式
+        ## \u8d28\u91cf\u8981\u6c42
+        - \u6a21\u5757\u5212\u5206\u6e05\u6670\uff0c\u7b26\u5408 PAT
+        - API \u5951\u7ea6\u5b8c\u6574\uff0c\u5b57\u6bb5\u542b\u4e49\u660e\u786e
+        - \u6570\u636e\u6a21\u578b\u652f\u6301\u67e5\u8be2\u3001\u5199\u5165\u4e0e\u7ea6\u675f
+        - \u5386\u53f2\u6848\u4f8b\u9700\u5f15\u7528\u53ef\u590d\u7528\u6a21\u5f0f
         """
     ).strip()
     + "\n",
     "AnkerSPA/AA/AA2-TechnicalDesigner/checklist.yaml": dedent(
         """
-        checklist: ["架构含分层与组件职责", "API 契约齐备并含错误码", "数据模型含索引与约束", "结合 Practice 案例"]
+        checklist: ["\u67b6\u6784\u542b\u5206\u5c42\u4e0e\u7ec4\u4ef6\u804c\u8d23", "API \u5951\u7ea6\u9f50\u5907\u5e76\u542b\u9519\u8bef\u7801", "\u6570\u636e\u6a21\u578b\u542b\u7d22\u5f15\u4e0e\u7ea6\u675f", "\u7ed3\u5408 Practice \u6848\u4f8b"]
         """
     ).strip()
     + "\n",
@@ -305,7 +305,7 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         version: "1.0.0"
         inputs: ["Output/design/technical-design.md", "Output/design/api-spec.yaml", "Output/design/data-model.json"]
         outputs: ["Output/code/README.md", "Output/code/test-cases.json"]
-        description: "根据设计生成项目骨架与测试模板"
+        description: "\u6839\u636e\u8bbe\u8ba1\u751f\u6210\u9879\u76ee\u9aa8\u67b6\u4e0e\u6d4b\u8bd5\u6a21\u677f"
         """
     ).strip()
     + "\n",
@@ -313,28 +313,28 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         """
         # Code Generator Prompt
 
-        角色：资深工程师，遵循 PEP8 与分层架构。
+        \u89d2\u8272\uff1a\u8d44\u6df1\u5de5\u7a0b\u5e08\uff0c\u9075\u5faa PEP8 \u4e0e\u5206\u5c42\u67b6\u6784\u3002
 
-        ## 输入
-        - 技术方案：Output/design/technical-design.md
-        - API 规格：Output/design/api-spec.yaml
-        - 数据模型：Output/design/data-model.json
+        ## \u8f93\u5165
+        - \u6280\u672f\u65b9\u6848\uff1aOutput/design/technical-design.md
+        - API \u89c4\u683c\uff1aOutput/design/api-spec.yaml
+        - \u6570\u636e\u6a21\u578b\uff1aOutput/design/data-model.json
 
-        ## 输出任务
-        - FastAPI 三层目录结构
-        - 关键模块骨架与 TODO 注释
-        - 单元测试模板与测试用例清单
+        ## \u8f93\u51fa\u4efb\u52a1
+        - FastAPI \u4e09\u5c42\u76ee\u5f55\u7ed3\u6784
+        - \u5173\u952e\u6a21\u5757\u9aa8\u67b6\u4e0e TODO \u6ce8\u91ca
+        - \u5355\u5143\u6d4b\u8bd5\u6a21\u677f\u4e0e\u6d4b\u8bd5\u7528\u4f8b\u6e05\u5355
 
-        ## 质量要求
-        - 严格类型注解
-        - docstring 说明
-        - 错误处理与日志位置预留
+        ## \u8d28\u91cf\u8981\u6c42
+        - \u4e25\u683c\u7c7b\u578b\u6ce8\u89e3
+        - docstring \u8bf4\u660e
+        - \u9519\u8bef\u5904\u7406\u4e0e\u65e5\u5fd7\u4f4d\u7f6e\u9884\u7559
         """
     ).strip()
     + "\n",
     "AnkerSPA/AA/AA3-CodeGenerator/checklist.yaml": dedent(
         """
-        checklist: ["应用分层结构完整", "README 说明运行方式", "测试目录包含样例", "代码含 TODO 指引"]
+        checklist: ["\u5e94\u7528\u5206\u5c42\u7ed3\u6784\u5b8c\u6574", "README \u8bf4\u660e\u8fd0\u884c\u65b9\u5f0f", "\u6d4b\u8bd5\u76ee\u5f55\u5305\u542b\u6837\u4f8b", "\u4ee3\u7801\u542b TODO \u6307\u5f15"]
         """
     ).strip()
     + "\n",
@@ -346,7 +346,7 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         version: "1.0.0"
         inputs: ["Output/requirement/requirement-spec.json", "Output/design/technical-design.md", "Output/code/README.md", "Checklist/requirement-checklist.yaml", "Checklist/design-checklist.yaml", "Checklist/code-checklist.yaml"]
         outputs: ["Output/reports/quality-report.md", "Output/reports/execution-metrics.json"]
-        description: "评估产出质量并决定知识沉淀"
+        description: "\u8bc4\u4f30\u4ea7\u51fa\u8d28\u91cf\u5e76\u51b3\u5b9a\u77e5\u8bc6\u6c89\u6dc0"
         """
     ).strip()
     + "\n",
@@ -354,46 +354,46 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
         """
         # Quality Checker Prompt
 
-        角色：质量保障专家，负责评分与知识沉淀。
+        \u89d2\u8272\uff1a\u8d28\u91cf\u4fdd\u969c\u4e13\u5bb6\uff0c\u8d1f\u8d23\u8bc4\u5206\u4e0e\u77e5\u8bc6\u6c89\u6dc0\u3002
 
-        ## 输入
-        - 各阶段产出
-        - 阶段检查清单
+        ## \u8f93\u5165
+        - \u5404\u9636\u6bb5\u4ea7\u51fa
+        - \u9636\u6bb5\u68c0\u67e5\u6e05\u5355
 
-        ## 输出任务
-        1. 质量报告（Output/reports/quality-report.md）
-        2. 执行指标（Output/reports/execution-metrics.json）
+        ## \u8f93\u51fa\u4efb\u52a1
+        1. \u8d28\u91cf\u62a5\u544a\uff08Output/reports/quality-report.md\uff09
+        2. \u6267\u884c\u6307\u6807\uff08Output/reports/execution-metrics.json\uff09
 
-        ## 质量要求
-        - 列出亮点与改进项
-        - 指标结构化，含总体得分
-        - 当得分 >= 80 触发知识沉淀
+        ## \u8d28\u91cf\u8981\u6c42
+        - \u5217\u51fa\u4eae\u70b9\u4e0e\u6539\u8fdb\u9879
+        - \u6307\u6807\u7ed3\u6784\u5316\uff0c\u542b\u603b\u4f53\u5f97\u5206
+        - \u5f53\u5f97\u5206 >= 80 \u89e6\u53d1\u77e5\u8bc6\u6c89\u6dc0
         """
     ).strip()
     + "\n",
     "AnkerSPA/AA/AA4-QualityChecker/checklist.yaml": dedent(
         """
-        checklist: ["按阶段评分", "指出主要风险", "附执行指标", "给出沉淀建议"]
+        checklist: ["\u6309\u9636\u6bb5\u8bc4\u5206", "\u6307\u51fa\u4e3b\u8981\u98ce\u9669", "\u9644\u6267\u884c\u6307\u6807", "\u7ed9\u51fa\u6c89\u6dc0\u5efa\u8bae"]
         """
     ).strip()
     + "\n",
     "AnkerSPA/Output/code/README.md": dedent(
         """
-        # 代码骨架说明
+        # \u4ee3\u7801\u9aa8\u67b6\u8bf4\u660e
 
-        该目录由 AA3 自动生成，包含 FastAPI 项目的分层结构。
+        \u8be5\u76ee\u5f55\u7531 AA3 \u81ea\u52a8\u751f\u6210\uff0c\u5305\u542b FastAPI \u9879\u76ee\u7684\u5206\u5c42\u7ed3\u6784\u3002
 
-        ## 目录结构
-        - app/api: 路由与控制器
-        - app/models: ORM 模型
-        - app/services: 业务服务
-        - app/repositories: 数据访问
-        - tests: 单元测试模板
+        ## \u76ee\u5f55\u7ed3\u6784
+        - app/api: \u8def\u7531\u4e0e\u63a7\u5236\u5668
+        - app/models: ORM \u6a21\u578b
+        - app/services: \u4e1a\u52a1\u670d\u52a1
+        - app/repositories: \u6570\u636e\u8bbf\u95ee
+        - tests: \u5355\u5143\u6d4b\u8bd5\u6a21\u677f
 
-        ## 下一步
-        - 根据设计细化实现
-        - 完成 TODO 标注的逻辑
-        - 补充测试用例
+        ## \u4e0b\u4e00\u6b65
+        - \u6839\u636e\u8bbe\u8ba1\u7ec6\u5316\u5b9e\u73b0
+        - \u5b8c\u6210 TODO \u6807\u6ce8\u7684\u903b\u8f91
+        - \u8865\u5145\u6d4b\u8bd5\u7528\u4f8b
         """
     ).strip()
     + "\n",
@@ -403,8 +403,8 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
           "scenarios": [
             {
               "id": "TC-001",
-              "name": "示例测试用例",
-              "description": "替换为实际业务场景",
+              "name": "\u793a\u4f8b\u6d4b\u8bd5\u7528\u4f8b",
+              "description": "\u66ff\u6362\u4e3a\u5b9e\u9645\u4e1a\u52a1\u573a\u666f",
               "preconditions": [],
               "steps": [],
               "expected_result": ""
@@ -416,14 +416,14 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
     + "\n",
     "AnkerSPA/Output/reports/quality-report.md": dedent(
         """
-        # 质量报告
+        # \u8d28\u91cf\u62a5\u544a
 
-        - 总体评分：
-        - 亮点：
-        - 改进建议：
-        - 风险预警：
+        - \u603b\u4f53\u8bc4\u5206\uff1a
+        - \u4eae\u70b9\uff1a
+        - \u6539\u8fdb\u5efa\u8bae\uff1a
+        - \u98ce\u9669\u9884\u8b66\uff1a
 
-        > 由 AA4 输出，人工审核后可补充细节。
+        > \u7531 AA4 \u8f93\u51fa\uff0c\u4eba\u5de5\u5ba1\u6838\u540e\u53ef\u8865\u5145\u7ec6\u8282\u3002
         """
     ).strip()
     + "\n",
@@ -436,7 +436,7 @@ SPA_TEMPLATE_FILES: dict[str, str] = {
           "code_score": 0,
           "quality_score": 0,
           "cycle_time_minutes": 0,
-          "notes": "待AA4填写"
+          "notes": "\u5f85AA4\u586b\u5199"
         }
         """
     ).strip()
@@ -488,12 +488,12 @@ def initialize_spa_environment(
 
     if console:
         console.print(
-            f"[cyan]AnkerSPA PAT 模板[/cyan] 已同步到 [green]{spa_root}[/green] (模板版本 {SPA_TEMPLATE_VERSION})"
+            f"[cyan]AnkerSPA PAT \u6a21\u677f[/cyan] \u5df2\u540c\u6b65\u5230 [green]{spa_root}[/green] (\u6a21\u677f\u7248\u672c {SPA_TEMPLATE_VERSION})"
         )
         if created_files:
-            console.print(f"  新建文件: {len(created_files)}")
+            console.print(f"  \u65b0\u5efa\u6587\u4ef6: {len(created_files)}")
         if skipped_files and not force:
-            console.print(f"  跳过现有文件: {len(skipped_files)} (使用 --force 可覆盖)")
+            console.print(f"  \u8df3\u8fc7\u73b0\u6709\u6587\u4ef6: {len(skipped_files)} (\u4f7f\u7528 --force \u53ef\u8986\u76d6)")
 
     return InitializationResult(
         root=spa_root,

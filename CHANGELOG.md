@@ -1,9 +1,16 @@
+## [0.1.2] - 2025-11-06
+
+### Fixed
+
+- Remove all non-ASCII characters from `specify_cli.spa` modules and add UTF-8 declarations to avoid SyntaxError during CLI bootstrap
+- Rebuild CLI package as `anker-spa-cli` 0.1.2; users must reinstall this version to pick up the fix
+
 ## [0.1.1] - 2025-11-06
 
 ### Fixed
 
-- Bump CLI package to `anker-spa-cli` 0.1.1 并保证 `specify_cli.spa` 子包随发行包发布，避免 `ModuleNotFoundError`
-- 强制统一使用 `anker-spa` 命令，移除旧别名
+- Ensure `specify_cli.spa` is included in the distribution and require reinstall to avoid ModuleNotFoundError
+- Enforce `anker-spa` command as the sole entrypoint
 
 ## [0.1.0] - 2025-11-06
 

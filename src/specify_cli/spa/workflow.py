@@ -34,7 +34,7 @@ class WorkflowDefinition:
         for key, stage in self.stages.items():
             for dep in stage.depends_on:
                 if dep not in self.stages:
-                    raise ValueError(f"Workflow 阶段 {key} 依赖未知阶段 {dep}")
+                    raise ValueError(f"Workflow stage {key} depends on unknown stage {dep}")
                 indegree[key] += 1
                 adjacency[dep].append(key)
 
@@ -51,7 +51,7 @@ class WorkflowDefinition:
                     queue.append(neighbor)
 
         if len(order) != len(self.stages):
-            raise ValueError("Workflow 存在循环依赖，无法拓扑排序")
+            raise ValueError("Workflow contains circular dependencies and cannot be topologically sorted")
 
         return order
 
@@ -61,7 +61,7 @@ def _parse_list(value: object, *, field: str, stage_key: str) -> List[str]:
         return []
     if isinstance(value, list) and all(isinstance(item, str) for item in value):
         return list(value)
-    raise ValueError(f"Workflow 阶段 {stage_key} 字段 {field} 必须是字符串列表")
+    raise ValueError(f"Workflow stage {stage_key} field {field} must be a list of strings")
 
 
 def load_workflow_definition(path: Path) -> WorkflowDefinition:
@@ -70,7 +70,7 @@ def load_workflow_definition(path: Path) -> WorkflowDefinition:
 
     for key, value in data.items():
         if not isinstance(value, dict):
-            raise ValueError(f"Workflow 配置阶段 {key} 需要映射结构")
+            raise ValueError(f"Workflow stage {key} must be a mapping")
         label = str(value.get("label", key))
         agent = str(value.get("agent", ""))
         depends_on = _parse_list(value.get("depends_on"), field="depends_on", stage_key=key)
@@ -91,7 +91,7 @@ def load_workflow_definition(path: Path) -> WorkflowDefinition:
         )
 
     if not stages:
-        raise ValueError("Workflow 配置为空")
+        raise ValueError("Workflow configuration is empty")
 
     return WorkflowDefinition(stages=stages)
 

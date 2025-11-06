@@ -45,7 +45,7 @@ def _coerce_list(raw: object, *, field: str, agent_id: str) -> List[str]:
         return []
     if isinstance(raw, list) and all(isinstance(item, str) for item in raw):
         return list(raw)
-    raise ValueError(f"Agent {agent_id} metadata 字段 {field} 必须是字符串列表")
+    raise ValueError(f"Agent {agent_id} metadata field {field} must be a list of strings")
 
 
 def load_agent_registry(spa_root: Path) -> Dict[str, AgentConfig]:
@@ -70,7 +70,7 @@ def load_agent_registry(spa_root: Path) -> Dict[str, AgentConfig]:
             inputs = _coerce_list(data.get("inputs"), field="inputs", agent_id=agent_id)
             outputs = _coerce_list(data.get("outputs"), field="outputs", agent_id=agent_id)
         except KeyError as exc:
-            raise ValueError(f"Agent metadata 缺少必要字段 {exc} at {metadata_file}") from exc
+            raise ValueError(f"Agent metadata missing required field {exc} at {metadata_file}") from exc
 
         registry[agent_id] = AgentConfig(
             id=agent_id,
@@ -112,7 +112,7 @@ class ActivityAgent:
         missing = [path for path in self.input_paths if not path.exists()]
         if missing:
             missing_text = ", ".join(str(path.relative_to(self.spa_root)) for path in missing)
-            raise FileNotFoundError(f"{self.config.id} 依赖的输入缺失: {missing_text}")
+            raise FileNotFoundError(f"Missing required inputs for {self.config.id}: {missing_text}")
 
     def prepare_output_directories(self) -> None:
         for path in self.output_paths:
@@ -166,21 +166,21 @@ class RequirementAnalyzer(ActivityAgent):
 
         clar_created = _write_text(
             clar_path,
-            """# 澄清问题清单
+            """# Clarification Checklist
 
-- [ ] 问题 1：
-- [ ] 问题 2：
+- [ ] Question 1:
+- [ ] Question 2:
 
-> AA1 运行后请更新每个问题的状态与答案。
+> Update with answers after AA1 completes.
 """,
             force=force,
         )
 
         if self.console:
             if spec_created or clar_created:
-                self.log("已生成结构化需求骨架与澄清问题模版")
+                self.log("Generated requirement skeleton and clarification template")
             else:
-                self.log("输出已存在，使用 --force 可重新生成")
+                self.log("Outputs already exist, rerun with --force to regenerate")
 
 
 class TechnicalDesigner(ActivityAgent):
@@ -194,22 +194,22 @@ class TechnicalDesigner(ActivityAgent):
 
         design_created = _write_text(
             design_md,
-            """# 技术方案
+            """# Technical Design
 
-## 架构概览
-TODO: 描述整体架构、关键组件与交互模式。
+## Architecture Overview
+TODO: Describe the overall architecture, core components, and interactions.
 
-## 模块职责
-- 模块一：
-- 模块二：
+## Module Responsibilities
+- Module A:
+- Module B:
 
-## 技术选型
-- 后端：
-- 数据库：
+## Technology Choices
+- Backend:
+- Database:
 
-## 风险与缓解
-- 风险：
-- 缓解：
+## Risks and Mitigations
+- Risk:
+- Mitigation:
 """,
             force=force,
         )
@@ -241,9 +241,9 @@ components:
 
         if self.console:
             if design_created or api_created or data_created:
-                self.log("技术方案骨架已生成，等待细化")
+                self.log("Generated technical design skeleton; ready for refinement")
             else:
-                self.log("设计相关输出已存在，使用 --force 可覆盖")
+                self.log("Design outputs already exist; use --force to overwrite")
 
 
 class CodeGeneratorAgent(ActivityAgent):
@@ -255,16 +255,16 @@ class CodeGeneratorAgent(ActivityAgent):
         files_to_generate = {
             code_root / "app" / "__init__.py": "\n",
             code_root / "app" / "api" / "__init__.py": "\n",
-            code_root / "app" / "api" / "routes.py": """from fastapi import APIRouter
+            code_root / "app" / "api" / "routes.py": '''from fastapi import APIRouter
 
 router = APIRouter()
 
 
-@router.get("/health", summary="健康检查")
+@router.get("/health", summary="Health check")
 async def read_health():
-    """基础健康检查端点。"""
+    """Simple health check endpoint."""
     return {"status": "ok"}
-""",
+''',
             code_root / "app" / "services" / "__init__.py": "\n",
             code_root / "app" / "repositories" / "__init__.py": "\n",
             code_root / "app" / "models" / "__init__.py": "\n",
@@ -272,9 +272,9 @@ async def read_health():
             code_root / "tests" / "test_placeholder.py": """def test_placeholder():
     assert True
 """,
-            code_root / "docs" / "README.md": """# 代码说明
+            code_root / "docs" / "README.md": """# Code Guidelines
 
-根据业务场景补充使用范例与设计决策记录。
+Add usage examples and design decisions based on the business scenario.
 """,
         }
 
@@ -286,9 +286,9 @@ async def read_health():
 
         if self.console:
             if created_any:
-                self.log("代码骨架文件已准备完毕")
+                self.log("Code skeleton files prepared")
             else:
-                self.log("代码骨架已存在，使用 --force 可重新生成")
+                self.log("Code skeleton already exists; use --force to regenerate")
 
 
 class QualityCheckerAgent(ActivityAgent):
@@ -301,19 +301,19 @@ class QualityCheckerAgent(ActivityAgent):
 
         report_created = _write_text(
             report,
-            """# 质量报告
+            """# Quality Report
 
-## 综合评价
-- 得分：
-- 结论：
+## Overall Assessment
+- Score:
+- Summary:
 
-## 亮点
+## Highlights
 - 
 
-## 改进建议
+## Recommendations
 - 
 
-## 风险预警
+## Risks
 - 
 """,
             force=force,
@@ -328,16 +328,16 @@ class QualityCheckerAgent(ActivityAgent):
                 "code_score": 0,
                 "quality_score": 0,
                 "cycle_time_minutes": 0,
-                "notes": "人工评审后更新得分并记录沉淀依据",
+                "notes": "Update after manual review with justification for knowledge retention",
             },
             force=force,
         )
 
         if self.console:
             if report_created or metrics_created:
-                self.log("质量报告与指标模板已就位")
+                self.log("Quality report and metrics templates ready")
             else:
-                self.log("质量报告已存在，使用 --force 可重新生成")
+                self.log("Quality outputs already exist; use --force to regenerate")
 
 
 AGENT_KIND_REGISTRY = {
@@ -356,7 +356,7 @@ def instantiate_agent(
 ) -> ActivityAgent:
     agent_cls = AGENT_KIND_REGISTRY.get(config.kind)
     if agent_cls is None:
-        raise ValueError(f"未知的 agent kind: {config.kind} (agent: {config.id})")
+        raise ValueError(f"Unknown agent kind: {config.kind} (agent: {config.id})")
     return agent_cls(spa_root, config, console=console)
 
 

@@ -38,7 +38,7 @@ class AnkerSPA:
             return project_root
         spa_candidate = project_root / "AnkerSPA"
         if not spa_candidate.exists():
-            raise FileNotFoundError(f"未找到 AnkerSPA 目录: {spa_candidate}")
+            raise FileNotFoundError(f"AnkerSPA directory not found: {spa_candidate}")
         return spa_candidate
 
     def _load_orchestration_config(self) -> dict:
@@ -67,23 +67,23 @@ class AnkerSPA:
         for stage in stage_queue:
             agent_config = self.agent_registry.get(stage.agent)
             if not agent_config:
-                raise ValueError(f"未找到 Stage {stage.key} 对应的 Agent: {stage.agent}")
+                raise ValueError(f"Agent for stage {stage.key} not found: {stage.agent}")
             agent = instantiate_agent(self.spa_root, agent_config, console=self.console)
             self.console.print(
-                f"[bold cyan]Stage {stage.key}[/bold cyan] → {stage.label} ({agent_config.name})"
+                f"[bold cyan]Stage {stage.key}[/bold cyan] -> {stage.label} ({agent_config.name})"
             )
             agent.execute(force=force)
             executed.append(stage.key)
 
             if stage.human_review_enabled:
-                prompt = stage.human_review_prompt or "请进行人工审核"
-                self.console.print(f"[yellow]人工审核提示[/yellow]: {prompt}")
+                prompt = stage.human_review_prompt or "Manual review required"
+                self.console.print(f"[yellow]Manual review[/yellow]: {prompt}")
 
         return executed
 
     def promote_practice(self) -> Path | None:
         if not bool(self.orchestration_config.get("auto_promote_practice", True)):
-            self.console.print("[bright_black]配置关闭自动知识沉淀，跳过。[/bright_black]")
+            self.console.print("[bright_black]Auto practice promotion disabled; skipping.[/bright_black]")
             return None
 
         metrics_rel = self.orchestration_config.get(
@@ -97,14 +97,14 @@ class AnkerSPA:
             metrics = json.loads(metrics_path.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             self.console.print(
-                f"[red]无法解析指标文件[/red]: {metrics_path.relative_to(self.spa_root)}"
+                f"[red]Failed to parse metrics file[/red]: {metrics_path.relative_to(self.spa_root)}"
             )
             return None
 
         threshold = int(self.orchestration_config.get("knowledge_threshold", 80))
         if metrics.get("overall_score", 0) < threshold:
             self.console.print(
-                f"[bright_black]当前得分 {metrics.get('overall_score', 0)} 未达到知识沉淀阈值 {threshold}，跳过。[/bright_black]"
+                f"[bright_black]Overall score {metrics.get('overall_score', 0)} below threshold {threshold}; skipping promotion.[/bright_black]"
             )
             return None
 
@@ -145,7 +145,7 @@ class AnkerSPA:
         readme_path.write_text(readme_content, encoding="utf-8")
 
         self.console.print(
-            f"[green]已创建实践案例[/green]: {case_path.relative_to(self.spa_root)}"
+            f"[green]Practice case created[/green]: {case_path.relative_to(self.spa_root)}"
         )
         return case_path
 
@@ -153,18 +153,18 @@ class AnkerSPA:
         lines = [
             f"# {case_name}",
             "",
-            "## 综合得分",
-            f"- 总体得分: {metrics.get('overall_score', '未评估')}",
-            f"- 需求: {metrics.get('requirement_score', '未评估')}",
-            f"- 设计: {metrics.get('design_score', '未评估')}",
-            f"- 代码: {metrics.get('code_score', '未评估')}",
-            f"- 质量: {metrics.get('quality_score', '未评估')}",
+            "## Overall Scores",
+            f"- Total Score: {metrics.get('overall_score', 'n/a')}",
+            f"- Requirement: {metrics.get('requirement_score', 'n/a')}",
+            f"- Design: {metrics.get('design_score', 'n/a')}",
+            f"- Code: {metrics.get('code_score', 'n/a')}",
+            f"- Quality: {metrics.get('quality_score', 'n/a')}",
             "",
-            "## 运行指标",
-            f"- 周期时间(分钟): {metrics.get('cycle_time_minutes', '未知')}",
+            "## Execution Metrics",
+            f"- Cycle Time (minutes): {metrics.get('cycle_time_minutes', 'unknown')}",
             "",
-            "## 备注",
-            metrics.get("notes", "无"),
+            "## Notes",
+            metrics.get("notes", "None provided"),
         ]
         return "\n".join(lines) + "\n"
 
