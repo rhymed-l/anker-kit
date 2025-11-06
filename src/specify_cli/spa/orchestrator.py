@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """High-level orchestration for the AnkerSPA workflow."""
 
 from __future__ import annotations

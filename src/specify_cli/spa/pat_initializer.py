@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Bootstrap helpers for the AnkerSPA PAT directory structure."""
 
 from __future__ import annotations

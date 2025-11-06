@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Utility helpers for loading constrained YAML-like configuration files.
 
 The Spec-Kit AnkerSPA integration needs human-readable configuration while

@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Activity Agent definitions for AnkerSPA."""
 
 from __future__ import annotations

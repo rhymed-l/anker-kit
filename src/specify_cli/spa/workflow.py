@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """Workflow definition loader for AnkerSPA."""
 
 from __future__ import annotations
