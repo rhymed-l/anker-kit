@@ -1,3 +1,10 @@
+## [0.1.1] - 2025-11-06
+
+### Fixed
+
+- Bump CLI package to `anker-spa-cli` 0.1.1 并保证 `specify_cli.spa` 子包随发行包发布，避免 `ModuleNotFoundError`
+- 强制统一使用 `anker-spa` 命令，移除旧别名
+
 ## [0.1.0] - 2025-11-06
 
 ### Added
