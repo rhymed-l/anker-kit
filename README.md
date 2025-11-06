@@ -23,7 +23,7 @@
 - [⚡ Get Started](#-get-started)
 - [📽️ Video Overview](#️-video-overview)
 - [🤖 Supported AI Agents](#-supported-ai-agents)
-- [🔧 Specify CLI Reference](#-specify-cli-reference)
+- [🔧 AnkerSPA CLI Reference](#-ankerspa-cli-reference)
 - [📚 Core Philosophy](#-core-philosophy)
 - [🌟 Development Phases](#-development-phases)
 - [🎯 Experimental Goals](#-experimental-goals)
@@ -42,7 +42,7 @@ Spec-Driven Development **flips the script** on traditional software development
 
 ## ⚡ Get Started
 
-### 1. Install Specify CLI
+### 1. Install AnkerSPA CLI
 
 Choose your preferred installation method:
 
@@ -51,20 +51,20 @@ Choose your preferred installation method:
 Install once and use everywhere:
 
 ```bash
-uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+uv tool install anker-spa-cli --from git+https://github.com/github/spec-kit.git
 ```
 
 Then use the tool directly:
 
 ```bash
-specify init <PROJECT_NAME>
-specify check
+anker-spa init <PROJECT_NAME>
+anker-spa check
 ```
 
-To upgrade specify run:
+To upgrade anker-spa run:
 
 ```bash
-uv tool install specify-cli --force --from git+https://github.com/github/spec-kit.git
+uv tool install anker-spa-cli --force --from git+https://github.com/github/spec-kit.git
 ```
 
 #### Option 2: One-time Usage
@@ -72,7 +72,7 @@ uv tool install specify-cli --force --from git+https://github.com/github/spec-ki
 Run directly without installing:
 
 ```bash
-uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME>
+uvx --from git+https://github.com/github/spec-kit.git anker-spa init <PROJECT_NAME>
 ```
 
 **Benefits of persistent installation:**
@@ -82,49 +82,42 @@ uvx --from git+https://github.com/github/spec-kit.git specify init <PROJECT_NAME
 - Better tool management with `uv tool list`, `uv tool upgrade`, `uv tool uninstall`
 - Cleaner shell configuration
 
-### 2. Establish project principles
+### 2. Inspect the PAT scaffolding
 
-Launch your AI assistant in the project directory. The `/speckit.*` commands are available in the assistant.
+`anker-spa init` 现在会自动生成 `AnkerSPA/` 目录，包含 PAT 标准要求的十个子目录（MetaData、Input、Output、Plan、Checklist、Reference、Practice、Tool、Objective、AA）。
 
-Use the **`/speckit.constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
+- `MetaData/` 记录智能体元信息与依赖
+- `Plan/` 提供 `workflow.yaml` 串行编排以及 `aa-orchestration.yaml`
+- `AA/AA*/` 预置四个 Activity Agent 的元数据、提示词与检查清单
+- `Output/` 预留需求、设计、代码、报告、知识沉淀产出位置
 
-```bash
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements
-```
+熟悉目录后即可开始流程执行。
 
-### 3. Create the spec
+### 3. 执行 AnkerSPA 流程
 
-Use the **`/speckit.specify`** command to describe what you want to build. Focus on the **what** and **why**, not the tech stack.
-
-```bash
-/speckit.specify Build an application that can help me organize my photos in separate photo albums. Albums are grouped by date and can be re-organized by dragging and dropping on the main page. Albums are never in other nested albums. Within each album, photos are previewed in a tile-like interface.
-```
-
-### 4. Create a technical implementation plan
-
-Use the **`/speckit.plan`** command to provide your tech stack and architecture choices.
+新的 `spa` 子命令帮助你驱动四个 Activity Agent：
 
 ```bash
-/speckit.plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
+# 查看阶段配置
+anker-spa stages
+
+# 按顺序执行全部阶段（AA1 → AA4）
+anker-spa run
+
+# 根据评分触发知识沉淀
+anker-spa promote
 ```
 
-### 5. Break down into tasks
+阶段职责与产出：
 
-Use **`/speckit.tasks`** to create an actionable task list from your implementation plan.
+- **AA1 RequirementAnalyzer** → `Output/requirement/` 结构化需求与澄清问题
+- **AA2 TechnicalDesigner** → `Output/design/` 技术方案、API 规格、数据模型
+- **AA3 CodeGenerator** → `Output/code/` FastAPI 项目骨架与测试清单
+- **AA4 QualityChecker** → `Output/reports/` 质量报告、执行指标，并根据阈值写入 `Practice/`
 
-```bash
-/speckit.tasks
-```
+知识沉淀阈值、实践产物列表等可通过 `Plan/aa-orchestration.yaml` 调整。
 
-### 6. Execute implementation
-
-Use **`/speckit.implement`** to execute all tasks and build your feature according to the plan.
-
-```bash
-/speckit.implement
-```
-
-For detailed step-by-step instructions, see our [comprehensive guide](./spec-driven.md).
+For detailed PAT guidance,参考 [SPA 设计方案](./SPA_DESIGN_PROPOSAL.md) 与 [spec-driven.md](./spec-driven.md)。
 
 ## 📽️ Video Overview
 
@@ -151,7 +144,7 @@ Want to see Spec Kit in action? Watch our [video overview](https://www.youtube.c
 | [Amazon Q Developer CLI](https://aws.amazon.com/developer/learning/q-developer-cli/) | ⚠️ | Amazon Q Developer CLI [does not support](https://github.com/aws/amazon-q-developer-cli/issues/3064) custom arguments for slash commands. |
 | [Amp](https://ampcode.com/) | ✅ | |
 
-## 🔧 Specify CLI Reference
+## 🔧 AnkerSPA CLI Reference
 
 The `specify` command supports the following options:
 
@@ -159,10 +152,13 @@ The `specify` command supports the following options:
 
 | Command     | Description                                                    |
 |-------------|----------------------------------------------------------------|
-| `init`      | Initialize a new Specify project from the latest template      |
+| `init`      | Initialize a new AnkerSPA project from the latest template      |
 | `check`     | Check for installed tools (`git`, `claude`, `gemini`, `code`/`code-insiders`, `cursor-agent`, `windsurf`, `qwen`, `opencode`, `codex`) |
+| `spa stages`| Inspect PAT workflow stages (stage id,依赖、人审配置)          |
+| `spa run`   | Execute the AnkerSPA workflow (串行 AA1→AA4，可指定 stage)     |
+| `spa promote` | Promote artifacts into `Practice/` when得分达标              |
 
-### `specify init` Arguments & Options
+### `anker-spa init` Arguments & Options
 
 | Argument/Option        | Type     | Description                                                                  |
 |------------------------|----------|------------------------------------------------------------------------------|
@@ -181,49 +177,49 @@ The `specify` command supports the following options:
 
 ```bash
 # Basic project initialization
-specify init my-project
+anker-spa init my-project
 
 # Initialize with specific AI assistant
-specify init my-project --ai claude
+anker-spa init my-project --ai claude
 
 # Initialize with Cursor support
-specify init my-project --ai cursor-agent
+anker-spa init my-project --ai cursor-agent
 
 # Initialize with Windsurf support
-specify init my-project --ai windsurf
+anker-spa init my-project --ai windsurf
 
 # Initialize with Amp support
-specify init my-project --ai amp
+anker-spa init my-project --ai amp
 
 # Initialize with PowerShell scripts (Windows/cross-platform)
-specify init my-project --ai copilot --script ps
+anker-spa init my-project --ai copilot --script ps
 
 # Initialize in current directory
-specify init . --ai copilot
+anker-spa init . --ai copilot
 # or use the --here flag
-specify init --here --ai copilot
+anker-spa init --here --ai copilot
 
 # Force merge into current (non-empty) directory without confirmation
-specify init . --force --ai copilot
+anker-spa init . --force --ai copilot
 # or 
-specify init --here --force --ai copilot
+anker-spa init --here --force --ai copilot
 
 # Skip git initialization
-specify init my-project --ai gemini --no-git
+anker-spa init my-project --ai gemini --no-git
 
 # Enable debug output for troubleshooting
-specify init my-project --ai claude --debug
+anker-spa init my-project --ai claude --debug
 
 # Use GitHub token for API requests (helpful for corporate environments)
-specify init my-project --ai claude --github-token ghp_your_token_here
+anker-spa init my-project --ai claude --github-token ghp_your_token_here
 
 # Check system requirements
-specify check
+anker-spa check
 ```
 
 ### Available Slash Commands
 
-After running `specify init`, your AI coding agent will have access to these slash commands for structured development:
+After running `anker-spa init`, your AI coding agent will have access to these slash commands for structured development:
 
 #### Core Commands
 
@@ -231,11 +227,11 @@ Essential commands for the Spec-Driven Development workflow:
 
 | Command                  | Description                                                           |
 |--------------------------|-----------------------------------------------------------------------|
-| `/speckit.constitution`  | Create or update project governing principles and development guidelines |
-| `/speckit.specify`       | Define what you want to build (requirements and user stories)        |
-| `/speckit.plan`          | Create technical implementation plans with your chosen tech stack     |
-| `/speckit.tasks`         | Generate actionable task lists for implementation                     |
-| `/speckit.implement`     | Execute all tasks to build the feature according to the plan         |
+| `/anker.constitution`  | Create or update project governing principles and development guidelines |
+| `/anker.specify`       | Define what you want to build (requirements and user stories)        |
+| `/anker.plan`          | Create technical implementation plans with your chosen tech stack     |
+| `/anker.tasks`         | Generate actionable task lists for implementation                     |
+| `/anker.implement`     | Execute all tasks to build the feature according to the plan         |
 
 #### Optional Commands
 
@@ -243,15 +239,15 @@ Additional commands for enhanced quality and validation:
 
 | Command              | Description                                                           |
 |----------------------|-----------------------------------------------------------------------|
-| `/speckit.clarify`   | Clarify underspecified areas (recommended before `/speckit.plan`; formerly `/quizme`) |
-| `/speckit.analyze`   | Cross-artifact consistency & coverage analysis (run after `/speckit.tasks`, before `/speckit.implement`) |
-| `/speckit.checklist` | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
+| `/anker.clarify`   | Clarify underspecified areas (recommended before `/anker.plan`; formerly `/quizme`) |
+| `/anker.analyze`   | Cross-artifact consistency & coverage analysis (run after `/anker.tasks`, before `/anker.implement`) |
+| `/anker.checklist` | Generate custom quality checklists that validate requirements completeness, clarity, and consistency (like "unit tests for English") |
 
 ### Environment Variables
 
 | Variable         | Description                                                                                    |
 |------------------|------------------------------------------------------------------------------------------------|
-| `SPECIFY_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific feature when not using Git branches.<br/>**Must be set in the context of the agent you're working with prior to using `/speckit.plan` or follow-up commands. |
+| `SPECIFY_FEATURE` | Override feature detection for non-Git repositories. Set to the feature directory name (e.g., `001-photo-albums`) to work on a specific feature when not using Git branches.<br/>**Must be set in the context of the agent you're working with prior to using `/anker.plan` or follow-up commands. |
 
 ## 📚 Core Philosophy
 
@@ -318,52 +314,52 @@ If you encounter issues with an agent, please open an issue so we can refine the
 <details>
 <summary>Click to expand the detailed step-by-step walkthrough</summary>
 
-You can use the Specify CLI to bootstrap your project, which will bring in the required artifacts in your environment. Run:
+You can use the AnkerSPA CLI to bootstrap your project, which will bring in the required artifacts in your environment. Run:
 
 ```bash
-specify init <project_name>
+anker-spa init <project_name>
 ```
 
 Or initialize in the current directory:
 
 ```bash
-specify init .
+anker-spa init .
 # or use the --here flag
-specify init --here
+anker-spa init --here
 # Skip confirmation when the directory already has files
-specify init . --force
+anker-spa init . --force
 # or
-specify init --here --force
+anker-spa init --here --force
 ```
 
-![Specify CLI bootstrapping a new project in the terminal](./media/specify_cli.gif)
+![AnkerSPA CLI bootstrapping a new project in the terminal](./media/specify_cli.gif)
 
-You will be prompted to select the AI agent you are using. You can also proactively specify it directly in the terminal:
+You will be prompted to select the AI agent you are using. You can also proactively anker-spa it directly in the terminal:
 
 ```bash
-specify init <project_name> --ai claude
-specify init <project_name> --ai gemini
-specify init <project_name> --ai copilot
+anker-spa init <project_name> --ai claude
+anker-spa init <project_name> --ai gemini
+anker-spa init <project_name> --ai copilot
 
 # Or in current directory:
-specify init . --ai claude
-specify init . --ai codex
+anker-spa init . --ai claude
+anker-spa init . --ai codex
 
 # or use --here flag
-specify init --here --ai claude
-specify init --here --ai codex
+anker-spa init --here --ai claude
+anker-spa init --here --ai codex
 
 # Force merge into a non-empty current directory
-specify init . --force --ai claude
+anker-spa init . --force --ai claude
 
 # or
-specify init --here --force --ai claude
+anker-spa init --here --force --ai claude
 ```
 
 The CLI will check if you have Claude Code, Gemini CLI, Cursor CLI, Qwen CLI, opencode, Codex CLI, or Amazon Q Developer CLI installed. If you do not, or you prefer to get the templates without checking for the right tools, use `--ignore-agent-tools` with your command:
 
 ```bash
-specify init <project_name> --ai claude --ignore-agent-tools
+anker-spa init <project_name> --ai claude --ignore-agent-tools
 ```
 
 ### **STEP 1:** Establish project principles
@@ -372,19 +368,19 @@ Go to the project folder and run your AI agent. In our example, we're using `cla
 
 ![Bootstrapping Claude Code environment](./media/bootstrap-claude-code.gif)
 
-You will know that things are configured correctly if you see the `/speckit.constitution`, `/speckit.specify`, `/speckit.plan`, `/speckit.tasks`, and `/speckit.implement` commands available.
+You will know that things are configured correctly if you see the `/anker.constitution`, `/anker.specify`, `/anker.plan`, `/anker.tasks`, and `/anker.implement` commands available.
 
-The first step should be establishing your project's governing principles using the `/speckit.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
+The first step should be establishing your project's governing principles using the `/anker.constitution` command. This helps ensure consistent decision-making throughout all subsequent development phases:
 
 ```text
-/speckit.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
+/anker.constitution Create principles focused on code quality, testing standards, user experience consistency, and performance requirements. Include governance for how these principles should guide technical decisions and implementation choices.
 ```
 
 This step creates or updates the `.specify/memory/constitution.md` file with your project's foundational guidelines that the AI agent will reference during specification, planning, and implementation phases.
 
 ### **STEP 2:** Create project specifications
 
-With your project principles established, you can now create the functional specifications. Use the `/speckit.specify` command and then provide the concrete requirements for the project you want to develop.
+With your project principles established, you can now create the functional specifications. Use the `/anker.specify` command and then provide the concrete requirements for the project you want to develop.
 
 >[!IMPORTANT]
 >Be as explicit as possible about *what* you are trying to build and *why*. **Do not focus on the tech stack at this point**.
@@ -445,12 +441,12 @@ You should run the structured clarification workflow **before** creating a techn
 
 Preferred order:
 
-1. Use `/speckit.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
+1. Use `/anker.clarify` (structured) – sequential, coverage-based questioning that records answers in a Clarifications section.
 2. Optionally follow up with ad-hoc free-form refinement if something still feels vague.
 
 If you intentionally want to skip clarification (e.g., spike or exploratory prototype), explicitly state that so the agent doesn't block on missing clarifications.
 
-Example free-form refinement prompt (after `/speckit.clarify` if still needed):
+Example free-form refinement prompt (after `/anker.clarify` if still needed):
 
 ```text
 For each sample project or project that you create there should be a variable number of tasks between 5 and 15
@@ -468,7 +464,7 @@ It's important to use the interaction with Claude Code as an opportunity to clar
 
 ### **STEP 4:** Generate a plan
 
-You can now be specific about the tech stack and other technical requirements. You can use the `/speckit.plan` command that is built into the project template with a prompt like this:
+You can now be specific about the tech stack and other technical requirements. You can use the `/anker.plan` command that is built into the project template with a prompt like this:
 
 ```text
 We are going to generate this using .NET Aspire, using Postgres as the database. The frontend should use
@@ -552,12 +548,12 @@ You can also ask Claude Code (if you have the [GitHub CLI](https://docs.github.c
 >[!NOTE]
 >Before you have the agent implement it, it's also worth prompting Claude Code to cross-check the details to see if there are any over-engineered pieces (remember - it can be over-eager). If over-engineered components or decisions exist, you can ask Claude Code to resolve them. Ensure that Claude Code follows the [constitution](base/memory/constitution.md) as the foundational piece that it must adhere to when establishing the plan.
 
-### **STEP 6:** Generate task breakdown with /speckit.tasks
+### **STEP 6:** Generate task breakdown with /anker.tasks
 
-With the implementation plan validated, you can now break down the plan into specific, actionable tasks that can be executed in the correct order. Use the `/speckit.tasks` command to automatically generate a detailed task breakdown from your implementation plan:
+With the implementation plan validated, you can now break down the plan into specific, actionable tasks that can be executed in the correct order. Use the `/anker.tasks` command to automatically generate a detailed task breakdown from your implementation plan:
 
 ```text
-/speckit.tasks
+/anker.tasks
 ```
 
 This step creates a `tasks.md` file in your feature specification directory that contains:
@@ -569,17 +565,17 @@ This step creates a `tasks.md` file in your feature specification directory that
 - **Test-driven development structure** - If tests are requested, test tasks are included and ordered to be written before implementation
 - **Checkpoint validation** - Each user story phase includes checkpoints to validate independent functionality
 
-The generated tasks.md provides a clear roadmap for the `/speckit.implement` command, ensuring systematic implementation that maintains code quality and allows for incremental delivery of user stories.
+The generated tasks.md provides a clear roadmap for the `/anker.implement` command, ensuring systematic implementation that maintains code quality and allows for incremental delivery of user stories.
 
 ### **STEP 7:** Implementation
 
-Once ready, use the `/speckit.implement` command to execute your implementation plan:
+Once ready, use the `/anker.implement` command to execute your implementation plan:
 
 ```text
-/speckit.implement
+/anker.implement
 ```
 
-The `/speckit.implement` command will:
+The `/anker.implement` command will:
 
 - Validate that all prerequisites are in place (constitution, spec, plan, and tasks)
 - Parse the task breakdown from `tasks.md`

@@ -10,18 +10,16 @@
 # ]
 # ///
 """
-Specify CLI - Setup tool for Specify projects
+AnkerSPA CLI - Setup tool for AnkerPAT projects
 
 Usage:
-    uvx specify-cli.py init <project-name>
-    uvx specify-cli.py init .
-    uvx specify-cli.py init --here
+    anker-spa init <project-name>
+    anker-spa init .
+    anker-spa init --here
 
-Or install globally:
-    uv tool install --from specify-cli.py specify-cli
-    specify init <project-name>
-    specify init .
-    specify init --here
+Install via `uv`:
+    uv tool install --from git+https://github.com/github/spec-kit.git anker-spa-cli
+    uvx --from git+https://github.com/github/spec-kit.git anker-spa init <project-name>
 """
 
 import os
@@ -33,7 +31,7 @@ import shutil
 import shlex
 import json
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 
 import typer
 import httpx
@@ -46,6 +44,8 @@ from rich.align import Align
 from rich.table import Table
 from rich.tree import Tree
 from typer.core import TyperGroup
+
+from .spa import AnkerSPA, SPA_TEMPLATE_VERSION, initialize_spa_environment
 
 # For cross-platform keyboard input
 import readchar
@@ -358,12 +358,57 @@ class BannerGroup(TyperGroup):
 
 
 app = typer.Typer(
-    name="specify",
-    help="Setup tool for Specify spec-driven development projects",
+    name="anker-spa",
+    help="Setup tool for AnkerSPA spec-driven development projects",
     add_completion=False,
     invoke_without_command=True,
     cls=BannerGroup,
 )
+
+spa_app = typer.Typer(name="spa", help="AnkerSPA 工作流工具")
+app.add_typer(spa_app, name="spa")
+
+SPA_ROOT_OPTION = typer.Option(
+    Path.cwd(),
+    "--root",
+    help="AnkerSPA 所在目录（可以是项目根或 AnkerSPA 子目录）",
+    exists=True,
+    file_okay=False,
+    dir_okay=True,
+    resolve_path=True,
+)
+
+
+def _command_stages(root: Path) -> None:
+    spa = AnkerSPA(root, console=console)
+    table = Table(show_header=True, header_style="bold cyan")
+    table.add_column("Stage")
+    table.add_column("Label")
+    table.add_column("Agent")
+    table.add_column("Depends")
+    table.add_column("Human Review")
+    for stage in spa.list_stages():
+        depends = ",".join(stage.depends_on) if stage.depends_on else "-"
+        review = "是" if stage.human_review_enabled else "否"
+        table.add_row(stage.key, stage.label, stage.agent, depends, review)
+    console.print(table)
+
+
+def _command_run(root: Path, stages: List[str], force: bool) -> None:
+    spa = AnkerSPA(root, console=console)
+    executed = spa.run(force=force, stages=stages or None)
+    console.print(f"[green]执行完成[/green] → {', '.join(executed)}")
+
+
+def _command_promote(root: Path) -> None:
+    spa = AnkerSPA(root, console=console)
+    case_path = spa.promote_practice()
+    if case_path:
+        console.print(
+            f"[green]知识沉淀完成[/green]: {case_path.relative_to(spa.spa_root)}"
+        )
+    else:
+        console.print("[bright_black]未创建新案例。[/bright_black]")
 
 def show_banner():
     """Display the ASCII art banner."""
@@ -379,12 +424,37 @@ def show_banner():
     console.print(Align.center(Text(TAGLINE, style="italic bright_yellow")))
     console.print()
 
+
+@spa_app.command("stages")
+def spa_stages(root: Path = SPA_ROOT_OPTION):
+    """列出已配置的流程阶段信息。"""
+    _command_stages(root)
+
+
+@spa_app.command("run")
+def spa_run(
+    root: Path = SPA_ROOT_OPTION,
+    stage: List[str] = typer.Option(
+        [], "--stage", help="仅执行指定 stage key 或 agent id，可重复"
+    ),
+    force: bool = typer.Option(False, "--force/--no-force", help="覆盖已存在的产出"),
+):
+    """执行串行工作流生成各阶段产出。"""
+    _command_run(root, stage, force)
+
+
+@spa_app.command("promote")
+def spa_promote(root: Path = SPA_ROOT_OPTION):
+    """根据得分是否达标触发知识沉淀。"""
+    _command_promote(root)
+
+
 @app.callback()
 def callback(ctx: typer.Context):
     """Show banner when no subcommand is provided."""
     if ctx.invoked_subcommand is None and "--help" not in sys.argv and "-h" not in sys.argv:
         show_banner()
-        console.print(Align.center("[dim]Run 'specify --help' for usage information[/dim]"))
+        console.print(Align.center("[dim]Run 'anker-spa --help' for usage information[/dim]"))
         console.print()
 
 def run_command(cmd: list[str], check_return: bool = True, capture: bool = False, shell: bool = False) -> Optional[str]:
@@ -473,7 +543,7 @@ def init_git_repo(project_path: Path, quiet: bool = False) -> Tuple[bool, Option
             console.print("[cyan]Initializing git repository...[/cyan]")
         subprocess.run(["git", "init"], check=True, capture_output=True, text=True)
         subprocess.run(["git", "add", "."], check=True, capture_output=True, text=True)
-        subprocess.run(["git", "commit", "-m", "Initial commit from Specify template"], check=True, capture_output=True, text=True)
+        subprocess.run(["git", "commit", "-m", "Initial commit from AnkerSPA template"], check=True, capture_output=True, text=True)
         if not quiet:
             console.print("[green]✓[/green] Git repository initialized")
         return True, None
@@ -876,7 +946,7 @@ def init(
     github_token: str = typer.Option(None, "--github-token", help="GitHub token to use for API requests (or set GH_TOKEN or GITHUB_TOKEN environment variable)"),
 ):
     """
-    Initialize a new Specify project from the latest template.
+    Initialize a new AnkerSPA project from the latest template.
     
     This command will:
     1. Check that required tools are installed (git is optional)
@@ -887,17 +957,17 @@ def init(
     6. Optionally set up AI assistant commands
     
     Examples:
-        specify init my-project
-        specify init my-project --ai claude
-        specify init my-project --ai copilot --no-git
-        specify init --ignore-agent-tools my-project
-        specify init . --ai claude         # Initialize in current directory
-        specify init .                     # Initialize in current directory (interactive AI selection)
-        specify init --here --ai claude    # Alternative syntax for current directory
-        specify init --here --ai codex
-        specify init --here --ai codebuddy
-        specify init --here
-        specify init --here --force  # Skip confirmation when current directory not empty
+        anker-spa init my-project
+        anker-spa init my-project --ai claude
+        anker-spa init my-project --ai copilot --no-git
+        anker-spa init --ignore-agent-tools my-project
+        anker-spa init . --ai claude         # Initialize in current directory
+        anker-spa init .                     # Initialize in current directory (interactive AI selection)
+        anker-spa init --here --ai claude    # Alternative syntax for current directory
+        anker-spa init --here --ai codex
+        anker-spa init --here --ai codebuddy
+        anker-spa init --here
+        anker-spa init --here --force  # Skip confirmation when current directory not empty
     """
 
     show_banner()
@@ -946,7 +1016,7 @@ def init(
     current_dir = Path.cwd()
 
     setup_lines = [
-        "[cyan]Specify Project Setup[/cyan]",
+        "[cyan]AnkerSPA Project Setup[/cyan]",
         "",
         f"{'Project':<15} [green]{project_path.name}[/green]",
         f"{'Working Path':<15} [dim]{current_dir}[/dim]",
@@ -1011,9 +1081,9 @@ def init(
     console.print(f"[cyan]Selected AI assistant:[/cyan] {selected_ai}")
     console.print(f"[cyan]Selected script type:[/cyan] {selected_script}")
 
-    tracker = StepTracker("Initialize Specify Project")
+    tracker = StepTracker("Initialize AnkerSPA Project")
 
-    sys._specify_tracker_active = True
+    sys._anker_spa_tracker_active = True
 
     tracker.add("precheck", "Check required tools")
     tracker.complete("precheck", "ok")
@@ -1027,6 +1097,7 @@ def init(
         ("extract", "Extract template"),
         ("zip-list", "Archive contents"),
         ("extracted-summary", "Extraction summary"),
+        ("spa", "Provision AnkerSPA structure"),
         ("chmod", "Ensure scripts executable"),
         ("cleanup", "Cleanup"),
         ("git", "Initialize git repository"),
@@ -1045,6 +1116,14 @@ def init(
             local_client = httpx.Client(verify=local_ssl_context)
 
             download_and_extract_template(project_path, selected_ai, selected_script, here, verbose=False, tracker=tracker, client=local_client, debug=debug, github_token=github_token)
+
+            tracker.start("spa")
+            try:
+                spa_result = initialize_spa_environment(project_path, console=None, force=False)
+                tracker.complete("spa", f"{len(spa_result.created_files)} new")
+            except Exception as spa_error:
+                tracker.error("spa", str(spa_error))
+                raise
 
             ensure_executable_scripts(project_path, tracker=tracker)
 
@@ -1085,6 +1164,10 @@ def init(
 
     console.print(tracker.render())
     console.print("\n[bold green]Project ready.[/bold green]")
+    console.print(f"[dim]AnkerSPA 模板版本: {SPA_TEMPLATE_VERSION}[/dim]")
+    console.print(tracker.render())
+    console.print("\n[bold green]Project ready.[/bold green]")
+    console.print(f"[dim]AnkerSPA 模板版本: {SPA_TEMPLATE_VERSION}[/dim]")
     
     # Show git error details if initialization failed
     if git_error_message:
@@ -1139,11 +1222,11 @@ def init(
 
     steps_lines.append(f"{step_num}. Start using slash commands with your AI agent:")
 
-    steps_lines.append("   2.1 [cyan]/speckit.constitution[/] - Establish project principles")
-    steps_lines.append("   2.2 [cyan]/speckit.specify[/] - Create baseline specification")
-    steps_lines.append("   2.3 [cyan]/speckit.plan[/] - Create implementation plan")
-    steps_lines.append("   2.4 [cyan]/speckit.tasks[/] - Generate actionable tasks")
-    steps_lines.append("   2.5 [cyan]/speckit.implement[/] - Execute implementation")
+    steps_lines.append("   2.1 [cyan]/anker.constitution[/] - Establish project principles")
+    steps_lines.append("   2.2 [cyan]/anker.specify[/] - Create baseline specification")
+    steps_lines.append("   2.3 [cyan]/anker.plan[/] - Create implementation plan")
+    steps_lines.append("   2.4 [cyan]/anker.tasks[/] - Generate actionable tasks")
+    steps_lines.append("   2.5 [cyan]/anker.implement[/] - Execute implementation")
 
     steps_panel = Panel("\n".join(steps_lines), title="Next Steps", border_style="cyan", padding=(1,2))
     console.print()
@@ -1152,9 +1235,9 @@ def init(
     enhancement_lines = [
         "Optional commands that you can use for your specs [bright_black](improve quality & confidence)[/bright_black]",
         "",
-        f"○ [cyan]/speckit.clarify[/] [bright_black](optional)[/bright_black] - Ask structured questions to de-risk ambiguous areas before planning (run before [cyan]/speckit.plan[/] if used)",
-        f"○ [cyan]/speckit.analyze[/] [bright_black](optional)[/bright_black] - Cross-artifact consistency & alignment report (after [cyan]/speckit.tasks[/], before [cyan]/speckit.implement[/])",
-        f"○ [cyan]/speckit.checklist[/] [bright_black](optional)[/bright_black] - Generate quality checklists to validate requirements completeness, clarity, and consistency (after [cyan]/speckit.plan[/])"
+        f"○ [cyan]/anker.clarify[/] [bright_black](optional)[/bright_black] - Ask structured questions to de-risk ambiguous areas before planning (run before [cyan]/anker.plan[/] if used)",
+        f"○ [cyan]/anker.analyze[/] [bright_black](optional)[/bright_black] - Cross-artifact consistency & alignment report (after [cyan]/anker.tasks[/], before [cyan]/anker.implement[/])",
+        f"○ [cyan]/anker.checklist[/] [bright_black](optional)[/bright_black] - Generate quality checklists to validate requirements completeness, clarity, and consistency (after [cyan]/anker.plan[/])"
     ]
     enhancements_panel = Panel("\n".join(enhancement_lines), title="Enhancement Commands", border_style="cyan", padding=(1,2))
     console.print()
@@ -1194,7 +1277,7 @@ def check():
 
     console.print(tracker.render())
 
-    console.print("\n[bold green]Specify CLI is ready to use![/bold green]")
+    console.print("\n[bold green]AnkerSPA CLI is ready to use![/bold green]")
 
     if not git_ok:
         console.print("[dim]Tip: Install git for repository management[/dim]")

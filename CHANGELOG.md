@@ -1,3 +1,20 @@
+## [0.1.0] - 2025-11-06
+
+### Added
+
+- 自动生成符合 AnkerPAT 标准的 `AnkerSPA/` 目录结构（MetaData、Input、Output、Plan、Checklist、Reference、Practice、Tool、Objective、AA）
+- 四个 Activity Agent 的运行时实现（需求分析、技术设计、代码生成、质量检查）以及轻量串行工作流引擎
+- `specify spa stages|run|promote` 子命令，用于检查阶段配置、执行串行流程、按得分阈值沉淀实践案例
+- 质量报告与执行指标模板，以及按 `aa-orchestration.yaml` 配置的自动知识沉淀逻辑
+
+### Changed
+
+- `anker-spa init` 在提取模板后会同步最新的 AnkerSPA PAT 模板，并在初始化总结中输出模板版本
+- README 更新为 AnkerSPA 工作流指引，突出四个 Activity Agent 的职责与命令行用法
+- 模板内容更新以配套新目录结构（提示词、检查清单、输出骨架）
+- Slash 命令统一改用 `/anker.*` 前缀，并在 CLI、脚本、模板、文档中同步更新旧有引用
+- CLI 顶层命令更名为 `anker-spa`，安装包更名为 `anker-spa-cli`
+
 # Changelog
 
 <!-- markdownlint-disable MD024 -->
@@ -47,15 +64,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Support for using `.` as a shorthand for current directory in `specify init .` command, equivalent to `--here` flag but more intuitive for users.
-- Use the `/speckit.` command prefix to easily discover Spec Kit-related commands.
+- Support for using `.` as a shorthand for current directory in `anker-spa init .` command, equivalent to `--here` flag but more intuitive for users.
+- Use the `/anker.` command prefix to easily discover Spec Kit-related commands.
 - Refactor the prompts and templates to simplify their capabilities and how they are tracked. No more polluting things with tests when they are not needed.
 - Ensure that tasks are created per user story (simplifies testing and validation).
 - Add support for Visual Studio Code prompt shortcuts and automatic script execution.
 
 ### Changed
 
-- All command files now prefixed with `speckit.` (e.g., `speckit.specify.md`, `speckit.plan.md`) for better discoverability and differentiation in IDE/CLI command palettes and file explorers
+- All command files now prefixed with `anker.` (e.g., `anker.specify.md`, `anker.plan.md`) for better discoverability and differentiation in IDE/CLI command palettes and file explorers
 
 ## [0.0.17] - 2025-09-22
 
